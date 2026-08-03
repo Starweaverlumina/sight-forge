@@ -31,12 +31,12 @@ jobs:
       - name: Build
         run: dotnet build src/SightForge/SightForge.csproj --configuration Release --no-restore
 
-      - name: Publish portable Windows build
-        run: dotnet publish src/SightForge/SightForge.csproj --configuration Release --no-build --runtime win-x64 --self-contained false --output artifacts/SightForge-win-x64
+      - name: Publish framework-dependent Windows build
+        run: dotnet publish src/SightForge/SightForge.csproj --configuration Release --no-restore --output artifacts/SightForge
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: SightForge-win-x64
-          path: artifacts/SightForge-win-x64
+          name: SightForge-windows
+          path: artifacts/SightForge
           if-no-files-found: error
