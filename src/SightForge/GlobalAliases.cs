@@ -1,4 +1,11 @@
+global using System.IO;
 global using Brush = System.Windows.Media.Brush;
+global using Brushes = System.Windows.Media.Brushes;
+global using Button = System.Windows.Controls.Button;
+global using Color = System.Windows.Media.Color;
+global using ColorConverter = System.Windows.Media.ColorConverter;
+global using Pen = System.Windows.Media.Pen;
+global using Point = System.Windows.Point;
 global using TextBox = System.Windows.Controls.TextBox;
 global using MemoryStream = System.IO.MemoryStream;
 global using BinaryWriter = System.IO.BinaryWriter;
