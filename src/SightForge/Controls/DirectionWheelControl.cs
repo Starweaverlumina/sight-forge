@@ -93,8 +93,8 @@ public sealed class DirectionWheelControl : FrameworkElement
         var thickness = Math.Clamp(style.Thickness, 2, 14);
         var confidenceRadius = radius * (0.55 + (0.35 * _audio.Confidence));
         var endpoint = PointAt(center, confidenceRadius, angle);
-        context.DrawLine(new Pen(brush, thickness), center, endpoint);
-        context.DrawEllipse(brush, null, endpoint, 8, 8);
+        drawingContext.DrawLine(new Pen(brush, thickness), center, endpoint);
+        drawingContext.DrawEllipse(brush, null, endpoint, 8, 8);
     }
 
     private void DrawMotionDirection(DrawingContext context, WpfPoint center, double radius)
@@ -116,7 +116,7 @@ public sealed class DirectionWheelControl : FrameworkElement
         var text = new FormattedText(
             label,
             System.Globalization.CultureInfo.CurrentUICulture,
-            FlowDirection.LeftToRight,
+            System.Windows.FlowDirection.LeftToRight,
             new Typeface("Segoe UI Semibold"),
             14,
             Brushes.White,
