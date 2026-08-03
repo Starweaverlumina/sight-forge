@@ -1,0 +1,71 @@
+<Window x:Class="SightForge.AccessibilityHubWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="SightForge Accessibility Hub" Width="1080" Height="760"
+        MinWidth="820" MinHeight="620" Background="#0E1117" Foreground="White"
+        KeyDown="Window_KeyDown" Closing="Window_Closing">
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="8" />
+            <Setter Property="Padding" Value="20" />
+            <Setter Property="MinHeight" Value="96" />
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+        </Style>
+        <Style TargetType="TextBlock"><Setter Property="TextWrapping" Value="Wrap" /></Style>
+    </Window.Resources>
+    <Grid Margin="28">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel>
+            <TextBlock FontSize="38" FontWeight="Bold" Text="SightForge" />
+            <TextBlock Margin="0,8,0,0" FontSize="18" Foreground="#C4CBD8"
+                       Text="Universal low-vision and blind gaming accessibility hub" />
+        </StackPanel>
+
+        <Border Grid.Row="1" Margin="0,20,0,14" Padding="14" Background="#171D27" CornerRadius="10">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock x:Name="ModeText" FontSize="16" Text="Spoken focus: on" />
+                <TextBlock Margin="24,0,0,0" FontSize="16" Foreground="#A8B2C3"
+                           Text="Keyboard: arrows or Tab to move, Enter to open, F1 help, F2 mute, Escape close child windows" />
+            </StackPanel>
+        </Border>
+
+        <UniformGrid Grid.Row="2" Columns="2">
+            <Button x:Name="VisionButton" Click="VisionButton_Click" GotKeyboardFocus="Control_GotKeyboardFocus"
+                    AutomationProperties.Name="Open VisionForge live visual enhancement">
+                <StackPanel><TextBlock Text="1. VisionForge" /><TextBlock FontSize="14" Foreground="#C6CEDA" Text="Magnification, contrast, edge enhancement, motion emphasis, replay" /></StackPanel>
+            </Button>
+            <Button x:Name="SoundButton" Click="SoundButton_Click" GotKeyboardFocus="Control_GotKeyboardFocus"
+                    AutomationProperties.Name="Open SoundForge directional audio">
+                <StackPanel><TextBlock Text="2. SoundForge" /><TextBlock FontSize="14" Foreground="#C6CEDA" Text="Clock wheel, spatial cues, live system-audio direction" /></StackPanel>
+            </Button>
+            <Button x:Name="OcrButton" Click="OcrButton_Click" GotKeyboardFocus="Control_GotKeyboardFocus"
+                    AutomationProperties.Name="Open OCR menu and subtitle reader">
+                <StackPanel><TextBlock Text="3. Read the Screen" /><TextBlock FontSize="14" Foreground="#C6CEDA" Text="Capture visible text, enlarge it, and read it aloud" /></StackPanel>
+            </Button>
+            <Button x:Name="GuideButton" Click="GuideButton_Click" GotKeyboardFocus="Control_GotKeyboardFocus"
+                    AutomationProperties.Name="Open GuideForge game help">
+                <StackPanel><TextBlock Text="4. GuideForge" /><TextBlock FontSize="14" Foreground="#C6CEDA" Text="Game research, walkthrough help, accessibility recommendations" /></StackPanel>
+            </Button>
+            <Button x:Name="ProfilesButton" Click="ProfilesButton_Click" GotKeyboardFocus="Control_GotKeyboardFocus"
+                    AutomationProperties.Name="Open accessibility profile manager">
+                <StackPanel><TextBlock Text="5. Profiles" /><TextBlock FontSize="14" Foreground="#C6CEDA" Text="Create, import, export, and select game-specific profiles" /></StackPanel>
+            </Button>
+            <Button x:Name="SetupButton" Click="SetupButton_Click" GotKeyboardFocus="Control_GotKeyboardFocus"
+                    AutomationProperties.Name="Open accessibility setup wizard">
+                <StackPanel><TextBlock Text="6. Setup and Training" /><TextBlock FontSize="14" Foreground="#C6CEDA" Text="Vision, color, hearing, speech, and control calibration" /></StackPanel>
+            </Button>
+        </UniformGrid>
+
+        <Border Grid.Row="3" Margin="0,14,0,0" Padding="14" Background="#171D27" CornerRadius="10">
+            <TextBlock x:Name="StatusText" FontSize="16" Foreground="#D7DEEA" Text="Ready. Press Tab to begin." />
+        </Border>
+    </Grid>
+</Window>
