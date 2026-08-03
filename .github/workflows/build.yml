@@ -25,11 +25,17 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
-      - name: Restore
+      - name: Restore application
         run: dotnet restore src/SightForge/SightForge.csproj
 
-      - name: Build
+      - name: Restore tests
+        run: dotnet restore tests/SightForge.Tests/SightForge.Tests.csproj
+
+      - name: Build application
         run: dotnet build src/SightForge/SightForge.csproj --configuration Release --no-restore
+
+      - name: Run tests
+        run: dotnet test tests/SightForge.Tests/SightForge.Tests.csproj --configuration Release --no-restore --verbosity normal
 
       - name: Publish framework-dependent Windows build
         run: dotnet publish src/SightForge/SightForge.csproj --configuration Release --no-restore --output artifacts/SightForge
