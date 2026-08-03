@@ -128,14 +128,16 @@ public sealed class WasapiLoopbackDirectionService : IDisposable
         var balance = Math.Clamp((right - left) / denominator, -1.0, 1.0);
         var deadZone = Math.Clamp(settings.DirectionDeadZone, 0.02, 0.8);
 
-        var direction = balance switch
-        {
-            < var value when value < -deadZone => HorizontalAudioDirection.Left,
-            > var value when value > deadZone => HorizontalAudioDirection.Right,
-            _ => HorizontalAudioDirection.Center
-        };
+        var direction = balance < -deadZone
+            ? HorizontalAudioDirection.Left
+            : balance > deadZone
+                ? HorizontalAudioDirection.Right
+                : HorizontalAudioDirection.Center;
 
-        var confidence = Math.Clamp(Math.Abs(balance) / Math.Max(deadZone, 0.001), 0, 1);
+        var confidence = direction == HorizontalAudioDirection.Center
+            ? Math.Clamp(1.0 - (Math.Abs(balance) / deadZone), 0, 1)
+            : Math.Clamp((Math.Abs(balance) - deadZone) / Math.Max(1.0 - deadZone, 0.001), 0, 1);
+
         var clock = direction switch
         {
             HorizontalAudioDirection.Left => balance < -0.55 ? "9 o'clock" : "10 o'clock",
