@@ -96,6 +96,18 @@ dotnet run --project src/SightForge/SightForge.csproj
 
 For initial game testing, use borderless-windowed mode and place SightForge on a second monitor when possible.
 
+## First beta session
+
+1. Extract the Windows build into a normal local folder and run `SightForge.exe`.
+2. Windows SmartScreen may warn because this beta is not code-signed; verify the archive came from the SightForge GitHub Actions build.
+3. Open **Setup and Training** with `Ctrl+Shift+6` and save comfortable starting settings.
+4. Test **VisionForge** and **Read the Screen** on menus before live gameplay.
+5. Test **SoundForge** with headphones at a safe volume using obvious left/right test audio.
+6. Enable one assistance feature at a time so speech and cues do not become overwhelming.
+7. Start with a noncompetitive game and stop if the game or anti-cheat warns about capture behavior.
+
+Record the game, resolution, window mode, headphones, enabled features, OCR accuracy, distracting cues, speech interference, latency, and any control that is hard to find without sight.
+
 ## Data behavior
 
 - Replay frames remain in local memory in this prototype.
