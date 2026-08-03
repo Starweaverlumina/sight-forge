@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Media;
 using SightForge.Models;
+using WpfPoint = System.Windows.Point;
 
 namespace SightForge.Controls;
 
@@ -48,7 +49,7 @@ public sealed class DirectionWheelControl : FrameworkElement
         base.OnRender(drawingContext);
         var width = ActualWidth > 0 ? ActualWidth : Width;
         var height = ActualHeight > 0 ? ActualHeight : Height;
-        var center = new Point(width / 2.0, height / 2.0);
+        var center = new WpfPoint(width / 2.0, height / 2.0);
         var radius = Math.Max(20, Math.Min(width, height) / 2.0 - 12);
 
         drawingContext.DrawEllipse(
@@ -64,7 +65,7 @@ public sealed class DirectionWheelControl : FrameworkElement
         DrawCenterLabel(drawingContext, center);
     }
 
-    private static void DrawClockTicks(DrawingContext context, Point center, double radius)
+    private static void DrawClockTicks(DrawingContext context, WpfPoint center, double radius)
     {
         var pen = new Pen(new SolidColorBrush(Color.FromArgb(190, 210, 215, 225)), 2);
         for (var hour = 0; hour < 12; hour++)
@@ -76,7 +77,7 @@ public sealed class DirectionWheelControl : FrameworkElement
         }
     }
 
-    private void DrawAudioDirection(DrawingContext context, Point center, double radius)
+    private void DrawAudioDirection(DrawingContext context, WpfPoint center, double radius)
     {
         if (_audio.Timestamp == DateTimeOffset.MinValue || _audio.CombinedLevel <= 0) return;
 
@@ -96,7 +97,7 @@ public sealed class DirectionWheelControl : FrameworkElement
         context.DrawEllipse(brush, null, endpoint, 8, 8);
     }
 
-    private void DrawMotionDirection(DrawingContext context, Point center, double radius)
+    private void DrawMotionDirection(DrawingContext context, WpfPoint center, double radius)
     {
         if (_motion is null || _motion.Strength <= 0) return;
         var angle = DirectionAngle(_motion.Direction);
@@ -109,7 +110,7 @@ public sealed class DirectionWheelControl : FrameworkElement
         context.DrawLine(new Pen(brush, Math.Clamp(style.Thickness, 2, 14)), start, end);
     }
 
-    private void DrawCenterLabel(DrawingContext context, Point center)
+    private void DrawCenterLabel(DrawingContext context, WpfPoint center)
     {
         var label = _audio.Timestamp == DateTimeOffset.MinValue ? "READY" : _audio.ClockPosition.ToUpperInvariant();
         var text = new FormattedText(
@@ -120,7 +121,7 @@ public sealed class DirectionWheelControl : FrameworkElement
             14,
             Brushes.White,
             VisualTreeHelper.GetDpi(this).PixelsPerDip);
-        context.DrawText(text, new Point(center.X - (text.Width / 2.0), center.Y - (text.Height / 2.0)));
+        context.DrawText(text, new WpfPoint(center.X - (text.Width / 2.0), center.Y - (text.Height / 2.0)));
     }
 
     private EventCueStyle FindStyle(string eventId) =>
@@ -159,6 +160,6 @@ public sealed class DirectionWheelControl : FrameworkElement
         _ => -Math.PI / 2
     };
 
-    private static Point PointAt(Point center, double radius, double angle) =>
+    private static WpfPoint PointAt(WpfPoint center, double radius, double angle) =>
         new(center.X + (Math.Cos(angle) * radius), center.Y + (Math.Sin(angle) * radius));
 }
