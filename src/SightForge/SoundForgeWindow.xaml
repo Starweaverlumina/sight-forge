@@ -1,0 +1,79 @@
+<Window x:Class="SightForge.SoundForgeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:SightForge.Controls"
+        Title="SightForge — SoundForge"
+        Width="760" Height="620" MinWidth="640" MinHeight="520"
+        Background="#101218" Foreground="White" Closing="Window_Closing">
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel>
+            <TextBlock FontSize="30" FontWeight="Bold" Text="SoundForge" />
+            <TextBlock Margin="0,5,0,0" Foreground="#BBC2D0"
+                       Text="System-audio direction, clock callouts, and an accessible visual wheel." />
+        </StackPanel>
+
+        <Grid Grid.Row="1" Margin="0,22,0,18">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.1*" />
+                <ColumnDefinition Width="18" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+
+            <Border Padding="18" CornerRadius="14" Background="#191D26">
+                <StackPanel>
+                    <TextBlock FontSize="18" FontWeight="SemiBold" Text="Live direction" />
+                    <controls:DirectionWheelControl x:Name="DirectionWheel" Margin="0,18,0,10"
+                                                    Width="300" Height="300" HorizontalAlignment="Center" />
+                    <TextBlock x:Name="DirectionText" HorizontalAlignment="Center" FontSize="22"
+                               FontWeight="Bold" Foreground="#FFD85A" Text="READY" />
+                    <TextBlock x:Name="ConfidenceText" Margin="0,6,0,0" HorizontalAlignment="Center"
+                               Foreground="#BBC2D0" Text="Confidence: 0%" />
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Column="2" Padding="18" CornerRadius="14" Background="#191D26">
+                <StackPanel>
+                    <TextBlock FontSize="18" FontWeight="SemiBold" Text="Audio controls" />
+                    <CheckBox x:Name="ClockSpeechCheckBox" Margin="0,14,0,0"
+                              Content="Speak clock direction" />
+                    <CheckBox x:Name="CriticalOnlyCheckBox" Margin="0,10,0,0" IsChecked="True"
+                              Content="Speak only high-confidence cues" />
+
+                    <TextBlock Margin="0,18,0,0" Text="Minimum audible level" />
+                    <Slider x:Name="MinimumLevelSlider" Margin="0,6,0,0"
+                            Minimum="0.001" Maximum="0.15" Value="0.012" />
+
+                    <TextBlock Margin="0,16,0,0" Text="Direction dead zone" />
+                    <Slider x:Name="DeadZoneSlider" Margin="0,6,0,0"
+                            Minimum="0.03" Maximum="0.65" Value="0.16" />
+
+                    <TextBlock Margin="0,16,0,0" Text="Event interval" />
+                    <Slider x:Name="IntervalSlider" Margin="0,6,0,0"
+                            Minimum="100" Maximum="2000" Value="350" TickFrequency="50" />
+
+                    <Separator Margin="0,18,0,14" Background="#313846" />
+                    <TextBlock x:Name="LeftLevelText" Text="Left: 0%" />
+                    <ProgressBar x:Name="LeftLevelBar" Margin="0,5,0,0" Height="14" Maximum="1" />
+                    <TextBlock x:Name="RightLevelText" Margin="0,12,0,0" Text="Right: 0%" />
+                    <ProgressBar x:Name="RightLevelBar" Margin="0,5,0,0" Height="14" Maximum="1" />
+
+                    <Button x:Name="StartStopButton" Margin="0,22,0,0" Height="46"
+                            Content="Start Audio Direction" Click="StartStopButton_Click" />
+                    <Button Margin="0,9,0,0" Height="40" Content="Clear Wheel"
+                            Click="ClearButton_Click" />
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <Border Grid.Row="2" Padding="14,11" CornerRadius="10" Background="#171B23">
+            <TextBlock x:Name="StatusText" Foreground="#BBC2D0"
+                       Text="Status: Ready. Only audio already delivered to this computer is analyzed." />
+        </Border>
+    </Grid>
+</Window>
