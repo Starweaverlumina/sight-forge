@@ -1,7 +1,6 @@
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using SightForge.Services;
 
 namespace SightForge;
@@ -28,12 +27,12 @@ public partial class AccessibilityHubWindow : Window
         try
         {
             _hotkeys.Attach(this);
-            _hotkeys.RegisterCtrlShiftDigit(101, 1, () => Dispatcher.Invoke(() => OpenVision()));
-            _hotkeys.RegisterCtrlShiftDigit(102, 2, () => Dispatcher.Invoke(() => OpenSound()));
-            _hotkeys.RegisterCtrlShiftDigit(103, 3, () => Dispatcher.Invoke(() => OpenOcr()));
-            _hotkeys.RegisterCtrlShiftDigit(104, 4, () => Dispatcher.Invoke(() => OpenGuide()));
-            _hotkeys.RegisterCtrlShiftDigit(105, 5, () => Dispatcher.Invoke(() => OpenProfiles()));
-            _hotkeys.RegisterCtrlShiftDigit(106, 6, () => Dispatcher.Invoke(() => OpenSetup()));
+            _hotkeys.RegisterCtrlShiftDigit(101, 1, () => Dispatcher.Invoke(OpenVision));
+            _hotkeys.RegisterCtrlShiftDigit(102, 2, () => Dispatcher.Invoke(OpenSound));
+            _hotkeys.RegisterCtrlShiftDigit(103, 3, () => Dispatcher.Invoke(OpenOcr));
+            _hotkeys.RegisterCtrlShiftDigit(104, 4, () => Dispatcher.Invoke(OpenGuide));
+            _hotkeys.RegisterCtrlShiftDigit(105, 5, () => Dispatcher.Invoke(OpenProfiles));
+            _hotkeys.RegisterCtrlShiftDigit(106, 6, () => Dispatcher.Invoke(OpenSetup));
             StatusText.Text = "Global shortcuts active: Control Shift 1 through 6.";
         }
         catch (Exception exception)
@@ -64,7 +63,7 @@ public partial class AccessibilityHubWindow : Window
         _narrator.Speak(new NarrationRequest(announcement, NarrationPriority.Important));
     }
 
-    private void Control_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+    private void Control_GotKeyboardFocus(object sender, System.Windows.Input.KeyboardFocusChangedEventArgs e)
     {
         if (!_spokenFocus || sender is not Button button) return;
         var name = System.Windows.Automation.AutomationProperties.GetName(button);
@@ -73,14 +72,14 @@ public partial class AccessibilityHubWindow : Window
             _narrator.Speak(new NarrationRequest(name, NarrationPriority.Normal, true, "focus:" + name));
     }
 
-    private void Window_KeyDown(object sender, KeyEventArgs e)
+    private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
     {
-        if (e.Key == Key.F1)
+        if (e.Key == System.Windows.Input.Key.F1)
         {
             _narrator.Speak(new NarrationRequest("Use Tab or arrow keys to move. Press Enter to open. Press F2 to turn spoken focus on or off. Control Shift 1 opens vision. 2 opens sound. 3 reads the screen. 4 opens game help. 5 opens profiles. 6 opens setup.", NarrationPriority.Important));
             e.Handled = true;
         }
-        else if (e.Key == Key.F2)
+        else if (e.Key == System.Windows.Input.Key.F2)
         {
             _spokenFocus = !_spokenFocus;
             ModeText.Text = $"Spoken focus: {(_spokenFocus ? "on" : "off")}";
