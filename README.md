@@ -1,35 +1,91 @@
 # SightForge
 
-**Universal low-vision gaming accessibility toolkit for Windows.**
+**Universal low-vision and blind gaming accessibility toolkit for Windows.**
 
-SightForge is an independent accessibility application that captures visible desktop output, processes it in a separate live-feed window, and deliberately avoids game-memory access, target classification, input automation, injection, packet inspection, and anti-cheat bypassing.
+SightForge is an independent accessibility application that captures visible desktop output and audible Windows output without reading game memory, injecting into games, automating input, inspecting packets, or bypassing anti-cheat systems.
 
-## Current prototype
+## Testable beta features
 
-The `agent/compatibility-preview` branch contains a runnable Windows prototype with:
+### Accessibility Hub
+
+SightForge launches into a large-control, keyboard-first hub with spoken focus. The hub opens VisionForge, SoundForge, local screen reading, GuideForge, profiles, and setup/training.
+
+Global shortcuts while SightForge is running:
+
+- `Ctrl+Shift+1` — VisionForge
+- `Ctrl+Shift+2` — SoundForge
+- `Ctrl+Shift+3` — Read the screen
+- `Ctrl+Shift+4` — GuideForge
+- `Ctrl+Shift+5` — Profiles
+- `Ctrl+Shift+6` — Setup and training
+- `F1` — spoken shortcut help in the hub
+- `F2` — toggle spoken focus in the hub
+- `F5` — scan the screen in the OCR reader
+
+### VisionForge
 
 - Primary-display live capture in a separate compatibility window
-- Center-focused magnification from 1× to 4×
-- Live contrast and gamma adjustment
+- Center magnification from 1× to 4×
+- Contrast and gamma adjustment
 - Strong-edge enhancement
-- General visible-motion emphasis using frame differences
-- Adjustable motion sensitivity
+- General visible-motion emphasis
 - High-visibility center guide
-- Local JSON profile persistence
-- Guarded asynchronous frame processing and FPS reporting
-- A configurable 5–120 second in-memory rolling replay
-- Instant playback and replay-memory clearing
-- Safe adaptive tuning based on scene luminance, contrast spread, and overall motion noise
+- Safe scene-adaptive tuning
+- Configurable in-memory rolling replay
+- Local JSON settings persistence
 
-Adaptive tuning does not train an enemy detector. It gradually adjusts gamma, contrast, and motion-noise thresholds using statistics from visible frames. The rolling replay provides recent visual context for review without accessing the game process.
+### SoundForge
 
-## Requirements
+- Windows WASAPI loopback capture
+- Left, center, and right stereo-direction estimation
+- Clock-face direction wheel
+- Optional spoken clock callouts
+- Confidence filtering and rate limiting
+- Custom 3×3 spatial cue pitches
+- High-contrast and color-blind-safe cue styles
 
-- Windows 10 version 2004 or newer, or Windows 11
-- .NET 8 SDK to build from source
-- A 64-bit Windows computer
+Stereo cannot reliably distinguish front from rear. True front/rear/height direction requires multichannel audio or spatial metadata exposed by the platform.
+
+### Local screen reader
+
+- Captures the visible primary display
+- Uses Windows OCR locally
+- Displays recognized text in a large high-contrast view
+- Reads recognized text aloud
+- Does not upload screenshots by default
+
+### GuideForge
+
+- User-initiated game research and walkthrough help
+- Spoiler-aware question mode
+- Local response cache
+- Provider-independent research abstraction
+- Session-only API-key field that is cleared after each request
+
+### ProfileForge
+
+- Versioned accessibility profile packs
+- Vision, SoundForge, narration, OCR-region, source, and trust metadata
+- Local save/list support
+- Import/export-ready storage service
+- High-contrast and spoken-direction preferences
+
+### Setup and training
+
+- Starting magnification selection
+- Edge and motion preference selection
+- Color-blind-safe theme selection
+- Speech-rate testing
+- Clock-callout and confidence preference selection
+- Keyboard, controller-first, or voice-first preference recording
 
 ## Build and run
+
+Requirements:
+
+- Windows 10 version 2004 or newer, or Windows 11
+- .NET 8 Desktop Runtime to run the framework-dependent build
+- .NET 8 SDK to build from source
 
 ```powershell
 git clone https://github.com/Starweaverlumina/sight-forge.git
@@ -38,52 +94,38 @@ git switch agent/compatibility-preview
 dotnet run --project src/SightForge/SightForge.csproj
 ```
 
-Use borderless-windowed mode for initial testing. Start SightForge, press **Start Live Feed**, and place its window on a second monitor when possible. Enable rolling replay to retain recent processed frames in memory, then use **Play Rolling Replay** to review them.
+For initial game testing, use borderless-windowed mode and place SightForge on a second monitor when possible.
 
 ## Data behavior
 
-- Replay frames are kept in memory only in this prototype.
-- Closing SightForge or clearing replay memory removes those frames.
-- Profile settings are saved locally as JSON.
-- No frames are uploaded or transmitted by SightForge.
-- No game executable, process memory, network traffic, or controller input is inspected.
-
-## Important limitations
-
-- GDI capture and CPU processing are reference implementations, not the final low-latency architecture.
-- Full-screen exclusive applications may not capture correctly.
-- Motion emphasis reacts to qualifying pixel changes including camera motion, weather, particles, foliage, animation, and UI transitions.
-- Magnification currently focuses on the center of the primary display.
-- SightForge cannot know whether a moving shape is an enemy or determine exact in-game distance.
-- Some games restrict third-party capture or overlay tools. Players remain responsible for each game's rules.
-- Long replay windows use substantial RAM because frames are currently stored uncompressed.
-
-## Planned accessibility features
-
-- Windows Graphics Capture or Desktop Duplication
-- GPU processing through Direct3D shaders
-- Compressed replay storage and optional user-initiated clip export
-- Picture-in-picture and movable magnification regions
-- Saturation, color remapping, sharpening, and shadow controls
-- Directional audio visualization
-- Controller-first global controls
-- Per-game automatic profile selection
-- Capture-card mode for a fully separate processing computer
+- Replay frames remain in local memory in this prototype.
+- Closing SightForge or clearing replay removes those frames.
+- Accessibility profiles and cached guide answers are stored locally.
+- GuideForge API keys are not written to profiles or cache files.
+- SightForge does not scan game processes, drivers, memory, network traffic, peripherals, or other players' computers.
 
 ## Safety boundary
 
-SightForge enhances the visible image for accessibility. It must not:
+SightForge may enhance information already visible or audible to the player. It must not:
 
-- Determine whether a visible figure is an enemy or teammate
 - Reveal players or objects hidden behind geometry
+- Identify enemies from internal game state
 - Read or scan game-process memory
 - Inspect network packets
-- Inject code, shaders, drivers, or hooks into a game
-- Automate aiming, firing, movement, or other input
-- Conceal itself from or interfere with anti-cheat protections
+- Automate aiming, movement, firing, or other gameplay input
+- Inject code or DLLs into games
+- Evade anti-cheat systems
+- Automatically accuse players, create public blacklists, or submit bulk reports
 
-See [`docs/architecture/ADR-0001-compatibility-preview.md`](docs/architecture/ADR-0001-compatibility-preview.md).
+## Before public release
 
-## Project status
+This branch is a testable beta candidate, not yet a medically validated assistive device or production release. It still requires:
 
-Early functional prototype. The active research and implementation plan is tracked in GitHub issues and draft pull request #2.
+- Real Windows hardware testing across GPUs, displays, headphones, and audio devices
+- Testing with the intended low-vision user
+- Usability testing with additional blind, low-vision, deaf, hard-of-hearing, and colorblind players
+- Per-game compatibility testing and provider policy review
+- Installer, code-signing certificate, update channel, crash reporting choice, and privacy review
+- Performance profiling and GPU capture/processing work
+
+User testing is essential: cue frequency, speech density, OCR accuracy, contrast, motion sensitivity, and cognitive load are personal and cannot be finalized from automated tests alone.
