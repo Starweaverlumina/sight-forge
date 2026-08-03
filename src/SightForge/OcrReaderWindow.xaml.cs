@@ -1,5 +1,4 @@
 using System.Windows;
-using System.Windows.Input;
 using SightForge.Services;
 
 namespace SightForge;
@@ -42,9 +41,9 @@ public partial class OcrReaderWindow : Window
 
     private void StopButton_Click(object sender, RoutedEventArgs e) => _narrator.Stop();
 
-    private async void Window_KeyDown(object sender, KeyEventArgs e)
+    private async void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
     {
-        if (e.Key == Key.F5)
+        if (e.Key == System.Windows.Input.Key.F5)
         {
             await ScanAsync();
             e.Handled = true;
