@@ -33,6 +33,8 @@ public sealed class SoundForgeSettings
     public bool Enabled { get; set; }
     public bool MonoListeningEnabled { get; set; }
     public bool AnnounceOnlyHighConfidence { get; set; } = true;
+    public bool SpeakClockDirection { get; set; }
+    public bool CriticalOnlySpeech { get; set; } = true;
     public double MinimumAudibleLevel { get; set; } = 0.015;
     public double DirectionDeadZone { get; set; } = 0.12;
     public int AnalysisWindowMilliseconds { get; set; } = 80;
