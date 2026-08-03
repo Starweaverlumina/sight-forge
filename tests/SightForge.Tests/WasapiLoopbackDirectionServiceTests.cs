@@ -1,6 +1,7 @@
 using NAudio.Wave;
 using SightForge.Models;
 using SightForge.Services;
+using Xunit;
 
 namespace SightForge.Tests;
 
