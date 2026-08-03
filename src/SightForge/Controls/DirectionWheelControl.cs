@@ -87,7 +87,7 @@ public sealed class DirectionWheelControl : FrameworkElement
             _ => -Math.PI / 2.0
         };
 
-        var style = FindStyle("GeneralMotion");
+        var style = FindStyle("general-motion");
         var brush = BrushFrom(style.ColorHex, 205);
         var thickness = Math.Clamp(style.Thickness, 2, 14);
         var confidenceRadius = radius * (0.55 + (0.35 * _audio.Confidence));
@@ -100,7 +100,7 @@ public sealed class DirectionWheelControl : FrameworkElement
     {
         if (_motion is null || _motion.Strength <= 0) return;
         var angle = DirectionAngle(_motion.Direction);
-        var style = FindStyle("GeneralMotion");
+        var style = FindStyle("general-motion");
         var brush = BrushFrom(style.ColorHex, 150);
         var inner = radius * 0.62;
         var outer = radius * 0.92;
@@ -123,8 +123,8 @@ public sealed class DirectionWheelControl : FrameworkElement
         context.DrawText(text, new Point(center.X - (text.Width / 2.0), center.Y - (text.Height / 2.0)));
     }
 
-    private EventCueStyle FindStyle(string eventType) =>
-        _styles.FirstOrDefault(style => style.EventType.Equals(eventType, StringComparison.OrdinalIgnoreCase))
+    private EventCueStyle FindStyle(string eventId) =>
+        _styles.FirstOrDefault(style => style.EventId.Equals(eventId, StringComparison.OrdinalIgnoreCase))
         ?? EventCueStyleDefaults.CreateStandard().Last();
 
     private static SolidColorBrush BrushFrom(string value, byte fallbackAlpha)
