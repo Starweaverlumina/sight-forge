@@ -1,13 +1,15 @@
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
-using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 using SightForge.Models;
+using WpfComboBoxItem = System.Windows.Controls.ComboBoxItem;
+using WpfSelectionChangedEventArgs = System.Windows.Controls.SelectionChangedEventArgs;
+using WpfTextBox = System.Windows.Controls.TextBox;
+using WpfTextChangedEventArgs = System.Windows.Controls.TextChangedEventArgs;
 
 namespace SightForge;
 
-public partial class CueStyleEditorWindow : Window
+public partial class CueStyleEditorWindow : System.Windows.Window
 {
     private static readonly Regex HexColorPattern = new("^#(?:[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$", RegexOptions.Compiled);
     private readonly VisualSettings _workingSettings;
@@ -35,9 +37,9 @@ public partial class CueStyleEditorWindow : Window
         ValidateAll();
     }
 
-    private void ThemeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    private void ThemeComboBox_SelectionChanged(object sender, WpfSelectionChangedEventArgs e)
     {
-        if (_loadingTheme || ThemeComboBox.SelectedItem is not ComboBoxItem item)
+        if (_loadingTheme || ThemeComboBox.SelectedItem is not WpfComboBoxItem item)
         {
             return;
         }
@@ -53,21 +55,21 @@ public partial class CueStyleEditorWindow : Window
         }
     }
 
-    private void RestoreStock_Click(object sender, RoutedEventArgs e)
+    private void RestoreStock_Click(object sender, System.Windows.RoutedEventArgs e)
     {
         LoadStyles(EventCueStyleDefaults.CreateStandard());
         SelectTheme("Standard");
     }
 
-    private void HighContrast_Click(object sender, RoutedEventArgs e)
+    private void HighContrast_Click(object sender, System.Windows.RoutedEventArgs e)
     {
         LoadStyles(EventCueStyleDefaults.CreateHighContrastColorBlindSafe());
         SelectTheme("High Contrast Color-Blind Safe");
     }
 
-    private void ColorTextBox_TextChanged(object sender, TextChangedEventArgs e)
+    private void ColorTextBox_TextChanged(object sender, WpfTextChangedEventArgs e)
     {
-        if (sender is TextBox textBox && textBox.DataContext is CueStyleEditorItem item)
+        if (sender is WpfTextBox textBox && textBox.DataContext is CueStyleEditorItem item)
         {
             item.RefreshBrush();
             SelectTheme("Custom");
@@ -75,15 +77,15 @@ public partial class CueStyleEditorWindow : Window
         }
     }
 
-    private void Save_Click(object sender, RoutedEventArgs e)
+    private void Save_Click(object sender, System.Windows.RoutedEventArgs e)
     {
         if (!ValidateAll())
         {
-            MessageBox.Show(this,
+            System.Windows.MessageBox.Show(this,
                 "One or more colors are invalid. Use #RRGGBB or #AARRGGBB.",
                 "Invalid cue color",
-                MessageBoxButton.OK,
-                MessageBoxImage.Warning);
+                System.Windows.MessageBoxButton.OK,
+                System.Windows.MessageBoxImage.Warning);
             return;
         }
 
@@ -93,7 +95,7 @@ public partial class CueStyleEditorWindow : Window
         Close();
     }
 
-    private void Cancel_Click(object sender, RoutedEventArgs e)
+    private void Cancel_Click(object sender, System.Windows.RoutedEventArgs e)
     {
         DialogResult = false;
         Close();
@@ -114,7 +116,7 @@ public partial class CueStyleEditorWindow : Window
     private void SelectTheme(string themeName)
     {
         _loadingTheme = true;
-        foreach (var candidate in ThemeComboBox.Items.OfType<ComboBoxItem>())
+        foreach (var candidate in ThemeComboBox.Items.OfType<WpfComboBoxItem>())
         {
             if (string.Equals(candidate.Content?.ToString(), themeName, StringComparison.OrdinalIgnoreCase))
             {
@@ -128,7 +130,7 @@ public partial class CueStyleEditorWindow : Window
     }
 
     private string GetSelectedThemeName() =>
-        (ThemeComboBox.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "Custom";
+        (ThemeComboBox.SelectedItem as WpfComboBoxItem)?.Content?.ToString() ?? "Custom";
 }
 
 public sealed class CueStyleEditorItem : System.ComponentModel.INotifyPropertyChanged
