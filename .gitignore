@@ -1,0 +1,23 @@
+# .NET build output
+bin/
+obj/
+artifacts/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+
+# Local SightForge profiles
+Profiles/
+*.tmp
+
+# OS-generated files
+.DS_Store
+Thumbs.db
