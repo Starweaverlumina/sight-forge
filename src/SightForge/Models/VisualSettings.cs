@@ -19,6 +19,10 @@ public sealed class VisualSettings
         560, 640, 720,
         280, 340, 400
     ];
+
+    public string CueThemeName { get; set; } = "Standard";
+    public EventCueStyle[] EventCueStyles { get; set; } = EventCueStyleDefaults.CreateStandard();
+
     public byte MotionThreshold { get; set; } = 28;
     public int ReplaySeconds { get; set; } = 20;
     public int PreviewWidth { get; set; } = 960;
@@ -29,6 +33,19 @@ public sealed class VisualSettings
     {
         var clone = (VisualSettings)MemberwiseClone();
         clone.DirectionalAudioFrequencies = (int[])DirectionalAudioFrequencies.Clone();
+        clone.EventCueStyles = EventCueStyles.Select(style => style.Clone()).ToArray();
         return clone;
+    }
+
+    public void ResetCueStylesToStandard()
+    {
+        CueThemeName = "Standard";
+        EventCueStyles = EventCueStyleDefaults.CreateStandard();
+    }
+
+    public void ApplyHighContrastColorBlindSafeTheme()
+    {
+        CueThemeName = "High Contrast Color-Blind Safe";
+        EventCueStyles = EventCueStyleDefaults.CreateHighContrastColorBlindSafe();
     }
 }
