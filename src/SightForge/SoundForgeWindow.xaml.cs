@@ -8,7 +8,10 @@ namespace SightForge;
 public partial class SoundForgeWindow : Window
 {
     private readonly WasapiLoopbackDirectionService _audioDirection = new();
+    private readonly AccessibleNarrationService _narrator = new();
     private SoundForgeSettings _settings = new();
+    private string? _lastSpokenClock;
+    private DateTimeOffset _lastSpokenAt = DateTimeOffset.MinValue;
 
     public SoundForgeWindow()
     {
@@ -25,16 +28,19 @@ public partial class SoundForgeWindow : Window
             _audioDirection.Stop();
             StartStopButton.Content = "Start Audio Direction";
             StatusText.Text = "Status: Audio analysis stopped.";
+            _narrator.Speak(new NarrationRequest("Audio direction stopped.", NarrationPriority.Important));
             return;
         }
 
         _settings = new SoundForgeSettings
         {
+            Enabled = true,
             MinimumAudibleLevel = MinimumLevelSlider.Value,
             DirectionDeadZone = DeadZoneSlider.Value,
             MinimumEventIntervalMilliseconds = (int)Math.Round(IntervalSlider.Value),
             SpeakClockDirection = ClockSpeechCheckBox.IsChecked == true,
-            CriticalOnlySpeech = CriticalOnlyCheckBox.IsChecked == true
+            CriticalOnlySpeech = CriticalOnlyCheckBox.IsChecked == true,
+            AnnounceOnlyHighConfidence = CriticalOnlyCheckBox.IsChecked == true
         };
 
         try
@@ -42,10 +48,12 @@ public partial class SoundForgeWindow : Window
             _audioDirection.Start(_settings);
             StartStopButton.Content = "Stop Audio Direction";
             StatusText.Text = "Status: Listening to system output through WASAPI loopback.";
+            _narrator.Speak(new NarrationRequest("SoundForge listening.", NarrationPriority.Important));
         }
         catch (Exception exception)
         {
             StatusText.Text = $"Status: Audio capture could not start. {exception.Message}";
+            _narrator.Speak(new NarrationRequest("Audio capture could not start.", NarrationPriority.Important));
         }
     }
 
@@ -61,13 +69,24 @@ public partial class SoundForgeWindow : Window
             LeftLevelText.Text = $"Left: {snapshot.LeftLevel:P1}";
             RightLevelText.Text = $"Right: {snapshot.RightLevel:P1}";
 
-            if (_settings.SpeakClockDirection)
+            if (!_settings.SpeakClockDirection) return;
+            var shouldAnnounce = !_settings.CriticalOnlySpeech || snapshot.Confidence >= 0.78;
+            if (!shouldAnnounce)
             {
-                var shouldAnnounce = !_settings.CriticalOnlySpeech || snapshot.Confidence >= 0.78;
-                StatusText.Text = shouldAnnounce
-                    ? $"Clock callout ready: {snapshot.ClockPosition}. Speech output is the next integration layer."
-                    : "Status: Direction visible; speech suppressed below confidence threshold.";
+                StatusText.Text = "Status: Direction visible; speech suppressed below confidence threshold.";
+                return;
             }
+
+            var now = DateTimeOffset.UtcNow;
+            if (_lastSpokenClock == snapshot.ClockPosition && now - _lastSpokenAt < TimeSpan.FromSeconds(1.2)) return;
+            _lastSpokenClock = snapshot.ClockPosition;
+            _lastSpokenAt = now;
+            StatusText.Text = $"Spoken direction: {snapshot.ClockPosition}.";
+            _narrator.Speak(new NarrationRequest(
+                snapshot.ClockPosition,
+                snapshot.Confidence >= 0.9 ? NarrationPriority.Critical : NarrationPriority.Important,
+                true,
+                "clock:" + snapshot.ClockPosition));
         });
     }
 
@@ -77,6 +96,7 @@ public partial class SoundForgeWindow : Window
         {
             StartStopButton.Content = "Start Audio Direction";
             StatusText.Text = $"Status: Audio capture stopped. {exception.Message}";
+            _narrator.Speak(new NarrationRequest("Audio capture stopped.", NarrationPriority.Critical));
         });
     }
 
@@ -89,6 +109,7 @@ public partial class SoundForgeWindow : Window
         RightLevelBar.Value = 0;
         LeftLevelText.Text = "Left: 0%";
         RightLevelText.Text = "Right: 0%";
+        _lastSpokenClock = null;
     }
 
     private void Window_Closing(object? sender, CancelEventArgs e)
@@ -96,5 +117,6 @@ public partial class SoundForgeWindow : Window
         _audioDirection.DirectionChanged -= AudioDirection_DirectionChanged;
         _audioDirection.CaptureFailed -= AudioDirection_CaptureFailed;
         _audioDirection.Dispose();
+        _narrator.Dispose();
     }
 }
