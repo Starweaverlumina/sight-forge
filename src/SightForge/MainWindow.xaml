@@ -52,18 +52,43 @@
                 <StackPanel>
                     <TextBlock FontSize="18" FontWeight="SemiBold" Text="Visibility Controls" />
 
-                    <TextBlock Margin="0,18,0,4" Text="Magnification" />
-                    <Slider x:Name="MagnificationSlider" Minimum="1" Maximum="4" Value="1.5" TickFrequency="0.25" />
+                    <TextBlock x:Name="MagnificationLabel" Margin="0,18,0,4" Text="Magnification" />
+                    <Slider x:Name="MagnificationSlider"
+                            Minimum="1" Maximum="4" Value="1.5" TickFrequency="0.25"
+                            AutomationProperties.Name="Magnification"
+                            AutomationProperties.LabeledBy="{Binding ElementName=MagnificationLabel}"
+                            ValueChanged="MagnificationSlider_ValueChanged" />
 
-                    <TextBlock Margin="0,16,0,4" Text="Contrast" />
-                    <Slider x:Name="ContrastSlider" Minimum="0.5" Maximum="2.5" Value="1" TickFrequency="0.1" />
+                    <TextBlock x:Name="ContrastLabel" Margin="0,16,0,4" Text="Contrast" />
+                    <Slider x:Name="ContrastSlider"
+                            Minimum="0.5" Maximum="2.5" Value="1" TickFrequency="0.1"
+                            AutomationProperties.Name="Contrast"
+                            AutomationProperties.LabeledBy="{Binding ElementName=ContrastLabel}"
+                            ValueChanged="ContrastSlider_ValueChanged" />
 
-                    <TextBlock Margin="0,16,0,4" Text="Gamma" />
-                    <Slider x:Name="GammaSlider" Minimum="0.4" Maximum="2.2" Value="1" TickFrequency="0.1" />
+                    <TextBlock x:Name="GammaLabel" Margin="0,16,0,4" Text="Gamma" />
+                    <Slider x:Name="GammaSlider"
+                            Minimum="0.4" Maximum="2.2" Value="1" TickFrequency="0.1"
+                            AutomationProperties.Name="Gamma"
+                            AutomationProperties.LabeledBy="{Binding ElementName=GammaLabel}"
+                            ValueChanged="GammaSlider_ValueChanged" />
 
-                    <CheckBox x:Name="EdgeEnhancementCheckBox" Margin="0,18,0,0" Content="Edge enhancement" />
-                    <CheckBox x:Name="MotionEmphasisCheckBox" Margin="0,10,0,0" Content="General motion emphasis" />
-                    <CheckBox x:Name="CrosshairCheckBox" Margin="0,10,0,0" IsChecked="True" Content="High-visibility center guide" />
+                    <CheckBox x:Name="EdgeEnhancementCheckBox"
+                              Margin="0,18,0,0"
+                              Content="Edge enhancement"
+                              Checked="EdgeEnhancementCheckBox_Toggled"
+                              Unchecked="EdgeEnhancementCheckBox_Toggled" />
+                    <CheckBox x:Name="MotionEmphasisCheckBox"
+                              Margin="0,10,0,0"
+                              Content="General motion emphasis"
+                              Checked="MotionEmphasisCheckBox_Toggled"
+                              Unchecked="MotionEmphasisCheckBox_Toggled" />
+                    <CheckBox x:Name="CrosshairCheckBox"
+                              Margin="0,10,0,0"
+                              IsChecked="True"
+                              Content="High-visibility center guide"
+                              Checked="CrosshairCheckBox_Toggled"
+                              Unchecked="CrosshairCheckBox_Toggled" />
 
                     <Button x:Name="StartButton"
                             Margin="0,24,0,0"
