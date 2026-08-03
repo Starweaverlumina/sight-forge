@@ -55,7 +55,6 @@ public sealed class AdaptiveVisualTuner
 
     public bool ApplySafeAdaptation(VisualSettings settings)
     {
-        var changed = false;
         var desiredGamma = _smoothedLuminance switch
         {
             < 0.20 => 1.45,
@@ -76,14 +75,18 @@ public sealed class AdaptiveVisualTuner
         var desiredThreshold = _smoothedMotion > 0.35 ? 44 :
                                _smoothedMotion > 0.18 ? 34 : 26;
 
-        changed |= MoveToward(ref settings.Gamma, desiredGamma, 0.025, 0.65, 1.65);
-        changed |= MoveToward(ref settings.Contrast, desiredContrast, 0.025, 0.8, 1.55);
-
+        var oldGamma = settings.Gamma;
+        var oldContrast = settings.Contrast;
         var oldThreshold = settings.MotionThreshold;
+
+        settings.Gamma = MoveToward(settings.Gamma, desiredGamma, 0.025, 0.65, 1.65);
+        settings.Contrast = MoveToward(settings.Contrast, desiredContrast, 0.025, 0.8, 1.55);
         settings.MotionThreshold = (byte)Math.Clamp(
             oldThreshold + Math.Sign(desiredThreshold - oldThreshold), 16, 60);
-        changed |= oldThreshold != settings.MotionThreshold;
-        return changed;
+
+        return Math.Abs(settings.Gamma - oldGamma) > 0.0001 ||
+               Math.Abs(settings.Contrast - oldContrast) > 0.0001 ||
+               settings.MotionThreshold != oldThreshold;
     }
 
     public void Reset()
@@ -96,12 +99,9 @@ public sealed class AdaptiveVisualTuner
     private static double Smooth(double current, double incoming, double rate) =>
         current + ((incoming - current) * rate);
 
-    private static bool MoveToward(ref double value, double target, double step, double minimum, double maximum)
+    private static double MoveToward(double value, double target, double step, double minimum, double maximum)
     {
         var next = value + Math.Clamp(target - value, -step, step);
-        next = Math.Clamp(next, minimum, maximum);
-        if (Math.Abs(next - value) < 0.0001) return false;
-        value = next;
-        return true;
+        return Math.Clamp(next, minimum, maximum);
     }
 }
